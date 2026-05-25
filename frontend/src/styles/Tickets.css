@@ -1,0 +1,20 @@
+.tickets-container {
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+}
+
+.tickets-container h1 {
+  margin: 0 0 20px;
+  font-size: 32px;
+  color: #333;
+}
+
+.tickets-container p {
+  margin: 0;
+  font-size: 16px;
+  color: #666;
+  line-height: 1.6;
+}

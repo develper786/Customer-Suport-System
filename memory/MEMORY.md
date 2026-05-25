@@ -1,0 +1,2 @@
+- [Project Setup Complete](project_setup_complete.md) — Spring Boot 4.0.5 + React Vite frontend created and configured
+- [Tech Stack Final](tech_stack_final.md) — Finalized TECH-STACK.md with all dependencies
