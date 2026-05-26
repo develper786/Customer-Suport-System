@@ -3,6 +3,7 @@ package com.customersupport.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.customersupport.dto.LoginRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -42,7 +43,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
-        String username = loginRequest.getUsername();
+        String username = loginRequest.username();
 
         try {
             logger.info("Login attempt for username: {}", username);
@@ -50,7 +51,7 @@ public class AuthController {
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     username,
-                    loginRequest.getPassword()
+                    loginRequest.password()
                 )
             );
 
@@ -151,31 +152,4 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    public static class LoginRequest {
-        private String username;
-        private String password;
-
-        public LoginRequest() {}
-
-        public LoginRequest(String username, String password) {
-            this.username = username;
-            this.password = password;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
-    }
 }

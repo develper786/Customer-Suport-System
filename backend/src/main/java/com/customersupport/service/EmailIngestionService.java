@@ -38,21 +38,21 @@ public class EmailIngestionService {
 
     @Transactional
     public Ticket processIncomingEmail(SendGridInboundEvent event) throws Exception {
-        logger.info("Processing incoming email from: {} with subject: {}", event.getFrom(), event.getSubject());
+        logger.info("Processing incoming email from: {} with subject: {}", event.from(), event.subject());
 
         // Check for duplicate using Message-ID
-        if (event.getMessageId() != null) {
-            Optional<EmailMetadata> existing = emailMetadataRepository.findByMessageIdHeader(event.getMessageId());
+        if (event.messageId() != null) {
+            Optional<EmailMetadata> existing = emailMetadataRepository.findByMessageIdHeader(event.messageId());
             if (existing.isPresent()) {
-                logger.warn("Duplicate email detected with Message-ID: {}", event.getMessageId());
+                logger.warn("Duplicate email detected with Message-ID: {}", event.messageId());
                 return existing.get().getTicket();
             }
         }
 
         // Check if this is a reply to an existing ticket
         Ticket ticket;
-        if (event.getInReplyTo() != null) {
-            Optional<EmailMetadata> parentMetadata = emailMetadataRepository.findByMessageIdHeader(event.getInReplyTo());
+        if (event.inReplyTo() != null) {
+            Optional<EmailMetadata> parentMetadata = emailMetadataRepository.findByMessageIdHeader(event.inReplyTo());
             if (parentMetadata.isPresent()) {
                 ticket = parentMetadata.get().getTicket();
                 logger.info("Email is a reply to existing ticket ID: {}", ticket.getId());
@@ -64,30 +64,30 @@ public class EmailIngestionService {
         }
 
         // Extract customer info
-        String[] customerInfo = extractCustomerInfo(event.getFrom());
+        String[] customerInfo = extractCustomerInfo(event.from());
         String customerName = customerInfo[0];
         String customerEmail = customerInfo[1];
 
         // Create message in existing ticket
         Message message = new Message();
         message.setTicket(ticket);
-        message.setBody(event.getText() != null ? event.getText() : event.getHtml());
+        message.setBody(event.text() != null ? event.text() : event.html());
         message.setSenderType(SenderType.CUSTOMER);
         message.setSenderName(customerName);
-        message.setSentAt(event.getTimestamp() != null ?
-            LocalDateTime.ofInstant(event.getTimestamp(), ZoneId.systemDefault()) :
+        message.setSentAt(event.timestamp() != null ?
+            LocalDateTime.ofInstant(event.timestamp(), ZoneId.systemDefault()) :
             LocalDateTime.now());
         messageRepository.save(message);
 
         // Store email metadata for threading and deduplication
-        if (event.getMessageId() != null) {
+        if (event.messageId() != null) {
             EmailMetadata metadata = new EmailMetadata(
                 ticket,
-                event.getMessageId(),
+                event.messageId(),
                 customerEmail,
-                event.getTo(),
-                event.getSubject(),
-                event.getInReplyTo()
+                event.to(),
+                event.subject(),
+                event.inReplyTo()
             );
             emailMetadataRepository.save(metadata);
         }
@@ -99,16 +99,16 @@ public class EmailIngestionService {
     }
 
     private Ticket createNewTicket(SendGridInboundEvent event) {
-        String[] customerInfo = extractCustomerInfo(event.getFrom());
+        String[] customerInfo = extractCustomerInfo(event.from());
         String customerName = customerInfo[0];
         String customerEmail = customerInfo[1];
 
         // Auto-categorize based on subject and body
-        TicketCategory category = detectTicketCategory(event.getSubject(), event.getText());
+        TicketCategory category = detectTicketCategory(event.subject(), event.text());
 
         Ticket ticket = new Ticket();
-        ticket.setTitle(event.getSubject() != null ? event.getSubject() : "Email from " + customerName);
-        ticket.setDescription(event.getText() != null ? event.getText() : event.getHtml());
+        ticket.setTitle(event.subject() != null ? event.subject() : "Email from " + customerName);
+        ticket.setDescription(event.text() != null ? event.text() : event.html());
         ticket.setStatus(TicketStatus.OPEN.name());
         ticket.setPriority("MEDIUM");
         ticket.setCategory(category.name());

@@ -30,7 +30,7 @@ public class MessageService {
         }
         List<Message> messages = messageRepository.findByTicketIdOrderBySentAtAsc(ticketId);
         return messages.stream()
-            .map(this::convertToResponse)
+            .map(MessageResponse::from)
             .collect(Collectors.toList());
     }
 
@@ -38,22 +38,22 @@ public class MessageService {
         Ticket ticket = ticketRepository.findById(ticketId)
             .orElseThrow(() -> new RuntimeException("Ticket not found with id: " + ticketId));
 
-        if (request.getBody() == null || request.getBody().trim().isEmpty()) {
+        if (request.body() == null || request.body().trim().isEmpty()) {
             throw new IllegalArgumentException("Message body cannot be empty");
         }
 
         SenderType senderType = SenderType.fromValue(
-            request.getSenderType() != null ? request.getSenderType() : "AGENT"
+            request.senderType() != null ? request.senderType() : "AGENT"
         );
 
         Message message = new Message();
         message.setTicket(ticket);
-        message.setBody(request.getBody());
+        message.setBody(request.body());
         message.setSenderType(senderType);
-        message.setSenderName(request.getSenderName() != null ? request.getSenderName() : senderType.getDescription());
+        message.setSenderName(request.senderName() != null ? request.senderName() : senderType.getDescription());
 
         Message saved = messageRepository.save(message);
-        return convertToResponse(saved);
+        return MessageResponse.from(saved);
     }
 
     public MessageResponse deleteMessage(Long messageId) {
@@ -61,7 +61,7 @@ public class MessageService {
             .orElseThrow(() -> new RuntimeException("Message not found with id: " + messageId));
 
         messageRepository.delete(message);
-        return convertToResponse(message);
+        return MessageResponse.from(message);
     }
 
     public List<MessageResponse> getMessagesByTicket(Long ticketId) {
@@ -70,18 +70,7 @@ public class MessageService {
         }
         List<Message> messages = messageRepository.findByTicketId(ticketId);
         return messages.stream()
-            .map(this::convertToResponse)
+            .map(MessageResponse::from)
             .collect(Collectors.toList());
-    }
-
-    private MessageResponse convertToResponse(Message message) {
-        return new MessageResponse(
-            message.getId(),
-            message.getTicket().getId(),
-            message.getBody(),
-            message.getSenderType(),
-            message.getSenderName(),
-            message.getSentAt()
-        );
     }
 }

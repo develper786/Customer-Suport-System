@@ -20,12 +20,12 @@ public class TicketService {
 
     public Ticket createTicket(TicketCreateRequest request) {
         Ticket ticket = new Ticket();
-        ticket.setTitle(request.getTitle());
-        ticket.setDescription(request.getDescription());
-        ticket.setPriority(request.getPriority() != null ? request.getPriority() : "MEDIUM");
-        ticket.setCategory(request.getCategory() != null ? request.getCategory() : "GENERAL");
-        ticket.setCustomerName(request.getCustomerName());
-        ticket.setCustomerEmail(request.getCustomerEmail());
+        ticket.setTitle(request.title());
+        ticket.setDescription(request.description());
+        ticket.setPriority(request.priority() != null ? request.priority() : "MEDIUM");
+        ticket.setCategory(request.category() != null ? request.category() : "GENERAL");
+        ticket.setCustomerName(request.customerName());
+        ticket.setCustomerEmail(request.customerEmail());
         ticket.setStatus("OPEN");
         return ticketRepository.save(ticket);
     }
@@ -33,14 +33,14 @@ public class TicketService {
     public Ticket updateTicket(Long id, TicketUpdateRequest request) {
         return ticketRepository.findById(id)
             .map(ticket -> {
-                if (request.getTitle() != null) ticket.setTitle(request.getTitle());
-                if (request.getDescription() != null) ticket.setDescription(request.getDescription());
-                if (request.getStatus() != null) ticket.setStatus(request.getStatus());
-                if (request.getPriority() != null) ticket.setPriority(request.getPriority());
-                if (request.getCategory() != null) ticket.setCategory(request.getCategory());
-                if (request.getCustomerName() != null) ticket.setCustomerName(request.getCustomerName());
-                if (request.getCustomerEmail() != null) ticket.setCustomerEmail(request.getCustomerEmail());
-                if (request.getAssignedTo() != null) {
+                if (request.title() != null) ticket.setTitle(request.title());
+                if (request.description() != null) ticket.setDescription(request.description());
+                if (request.status() != null) ticket.setStatus(request.status());
+                if (request.priority() != null) ticket.setPriority(request.priority());
+                if (request.category() != null) ticket.setCategory(request.category());
+                if (request.customerName() != null) ticket.setCustomerName(request.customerName());
+                if (request.customerEmail() != null) ticket.setCustomerEmail(request.customerEmail());
+                if (request.assignedTo() != null) {
                     // Note: Full user object assignment would require loading User entity
                     // For now, we skip assigning here as it's a separate concern
                 }

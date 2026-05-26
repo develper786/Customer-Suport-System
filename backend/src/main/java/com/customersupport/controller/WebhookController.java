@@ -29,7 +29,7 @@ public class WebhookController {
                                                                   @RequestHeader(value = "X-Twilio-Email-Event-Webhook-Signature", required = false) String signature,
                                                                   @RequestHeader(value = "X-Twilio-Email-Event-Webhook-Timestamp", required = false) String timestamp) {
         try {
-            logger.info("Received email webhook from: {}", event.getFrom());
+            logger.info("Received email webhook from: {}", event.from());
 
             // Verify webhook signature if token is configured
             if (webhookToken != null && !webhookToken.isEmpty()) {
