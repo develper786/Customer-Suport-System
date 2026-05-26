@@ -230,6 +230,46 @@ curl -X POST http://localhost:9000/api/auth/login \
 - Login with admin / admin123
 - Dashboard displays real-time backend health
 
+### Running Tests
+
+**Backend Integration Tests (10 tests):**
+
+```bash
+cd backend
+mvn test
+```
+
+Tests use H2 in-memory database and include:
+- `AuthControllerTest` - Login, logout, authentication endpoints
+- `TicketControllerTest` - CRUD operations with auth checks
+
+**Frontend Unit Tests (3 tests):**
+
+```bash
+cd frontend
+npm test
+```
+
+Uses Vitest + React Testing Library to test:
+- `LoginPage.test.jsx` - Form rendering, error display, loading state
+
+**E2E Tests (3 tests):**
+
+```bash
+cd frontend
+npm run test:e2e
+```
+
+Uses Playwright (Chromium) to test full authentication flows:
+- Login success → dashboard redirect
+- Login failure → error message display
+- Protected route redirect to login
+
+**All Tests:**
+- Use test credentials: `admin` / `admin123`
+- No over-engineering - focus on critical business logic only
+- Simple, maintainable, and fast
+
 ---
 
 ## Important Configuration Files
@@ -248,15 +288,35 @@ curl -X POST http://localhost:9000/api/auth/login \
 
 - Spring Boot Starters: web, security, data-jpa, actuator, devtools
 - PostgreSQL JDBC driver
-- Testing: JUnit, Spring Security Test
+- Testing: JUnit, Spring Security Test, H2 (in-memory test database)
+
+**`src/test/resources/application.properties`** - Test database config:
+
+- Uses H2 in-memory database (jdbc:h2:mem:testdb)
+- Auto-creates/drops schema per test run
+- Excludes Spring AI autoconfiguration (dummy API key)
 
 ### Frontend
 
-**`vite.config.js`** - Vite build configuration (React plugin)
+**`vite.config.js`** - Vite build configuration (React plugin + Vitest config)
 
 **`tailwind.config.js`** - Tailwind CSS configuration
 
 **`package.json`** - Dependencies and npm scripts
+
+**`playwright.config.js`** - E2E test configuration:
+
+- Chromium browser (headless)
+- Auto-starts frontend dev server
+- Tests in `src/test/e2e/`
+
+**`src/test/setup.js`** - Vitest global setup:
+
+- Registers React Testing Library matchers
+
+**Test Files:**
+- `src/test/LoginPage.test.jsx` - Unit tests for login component
+- `src/test/e2e/auth.spec.js` - End-to-end authentication tests
 
 ---
 
