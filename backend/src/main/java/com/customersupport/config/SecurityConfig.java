@@ -38,7 +38,7 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf
                 .csrfTokenRepository(new org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository())
-                .ignoringRequestMatchers("/api/auth/login", "/api/auth/register", "/webhook/**")
+                .ignoringRequestMatchers("/api/auth/login", "/api/auth/logout", "/api/auth/register", "/webhook/**")
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)

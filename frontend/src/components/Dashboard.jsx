@@ -22,10 +22,13 @@ export default function Dashboard() {
     try {
       setError('');
       await authService.logout();
+      // Logout clears sessionStorage, navigate to login
       navigate('/login');
     } catch (err) {
-      setError(err.message || 'Logout failed');
-      console.error('Logout failed:', err);
+      // Even if logout throws error, sessionStorage is cleared
+      // Navigate to login anyway to ensure UI reflects logout
+      console.error('Logout error:', err);
+      navigate('/login');
     }
   };
 

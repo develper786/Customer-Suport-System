@@ -45,18 +45,20 @@ export const authService = {
 
   /**
    * Logout current user
+   * Clears session data and invalidates backend session
    * @returns {Promise} Logout response
    */
   logout: async () => {
     try {
-      const response = await axiosInstance.post(AUTH_ENDPOINTS.LOGOUT);
-      sessionStorage.removeItem('user');
-      sessionStorage.removeItem('X-CSRF-TOKEN');
-      return response.data;
+      await axiosInstance.post(AUTH_ENDPOINTS.LOGOUT);
     } catch (error) {
+      // Log error but continue with logout (clear session anyway)
+      console.warn('Backend logout failed, clearing local session:', error);
+    } finally {
+      // Always clear session storage, even if backend logout fails
+      // This ensures user is logged out locally
       sessionStorage.removeItem('user');
       sessionStorage.removeItem('X-CSRF-TOKEN');
-      throw new Error(error.message || 'Logout failed');
     }
   },
 
