@@ -7,11 +7,12 @@ import authService from '../services/auth';
  * Verifies user authentication before allowing access to protected pages
  *
  * Features:
- * - Checks localStorage for user
+ * - Checks sessionStorage for user
  * - Verifies session with backend API call to /api/me
  * - Handles loading state while verifying
  * - Redirects to login on unauthorized (401)
  * - Uses global error handling from axios interceptors
+ * - Relies on httpOnly session cookies for actual auth (JSESSIONID)
  */
 export default function ProtectedRoute() {
   const [isAuthenticated, setIsAuthenticated] = useState(null); // null = loading, true/false = resolved
@@ -20,7 +21,7 @@ export default function ProtectedRoute() {
   useEffect(() => {
     const verifyAuth = async () => {
       try {
-        // First check localStorage (fast path)
+        // First check sessionStorage (fast path)
         const storedUser = authService.getStoredUser();
         if (!storedUser) {
           setIsAuthenticated(false);

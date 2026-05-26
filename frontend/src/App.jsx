@@ -20,7 +20,7 @@ function App() {
           </Route>
         </Route>
 
-        <Route path="/" element={<Navigate to={localStorage.getItem('user') ? "/dashboard/home" : "/login"} replace />} />
+        <Route path="/" element={<Navigate to={sessionStorage.getItem('user') ? "/dashboard/home" : "/login"} replace />} />
       </Routes>
     </Router>
   );

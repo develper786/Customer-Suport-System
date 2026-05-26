@@ -9,7 +9,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Get user from localStorage or global error handling will redirect to login
+    // Get user from sessionStorage or global error handling will redirect to login
     const storedUser = authService.getStoredUser();
     if (storedUser) {
       setUser(storedUser);

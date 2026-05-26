@@ -26,8 +26,14 @@ export const authService = {
       });
 
       if (response.data.success) {
-        // Store user data in localStorage
-        localStorage.setItem('user', JSON.stringify(response.data));
+        // Store only non-sensitive user data in sessionStorage (not localStorage)
+        // Session cookie (JSESSIONID) handles actual authentication
+        const userData = {
+          username: response.data.username,
+          roles: response.data.roles,
+          loginTime: new Date().toISOString(),
+        };
+        sessionStorage.setItem('user', JSON.stringify(userData));
         return response.data;
       }
 
@@ -44,12 +50,12 @@ export const authService = {
   logout: async () => {
     try {
       const response = await axiosInstance.post(AUTH_ENDPOINTS.LOGOUT);
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
+      sessionStorage.removeItem('user');
+      sessionStorage.removeItem('X-CSRF-TOKEN');
       return response.data;
     } catch (error) {
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
+      sessionStorage.removeItem('user');
+      sessionStorage.removeItem('X-CSRF-TOKEN');
       throw new Error(error.message || 'Logout failed');
     }
   },
@@ -82,19 +88,19 @@ export const authService = {
 
   /**
    * Check if user is logged in
-   * @returns {boolean} True if user exists in localStorage
+   * @returns {boolean} True if user exists in sessionStorage
    */
   isLoggedIn: () => {
-    const user = localStorage.getItem('user');
+    const user = sessionStorage.getItem('user');
     return !!user;
   },
 
   /**
-   * Get user from localStorage
+   * Get user from sessionStorage
    * @returns {object|null} User object or null
    */
   getStoredUser: () => {
-    const user = localStorage.getItem('user');
+    const user = sessionStorage.getItem('user');
     return user ? JSON.parse(user) : null;
   },
 };

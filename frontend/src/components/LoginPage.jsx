@@ -16,7 +16,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // authService.login handles localStorage and global error handling
+      // authService.login handles sessionStorage and session cookies for auth
       await authService.login(username, password);
       navigate('/dashboard');
     } catch (err) {
@@ -65,11 +65,13 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="demo-credentials">
-          <p>Demo Credentials:</p>
-          <p>Username: <code>admin</code></p>
-          <p>Password: <code>admin123</code></p>
-        </div>
+        {import.meta.env.DEV && (
+          <div className="demo-credentials">
+            <p>Demo Credentials (Dev only):</p>
+            <p>Username: <code>admin</code></p>
+            <p>Password: <code>admin123</code></p>
+          </div>
+        )}
       </div>
     </div>
   );

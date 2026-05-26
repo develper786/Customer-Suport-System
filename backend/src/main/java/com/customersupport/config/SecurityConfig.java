@@ -36,13 +36,16 @@ public class SecurityConfig {
         http
             .securityContext(context -> context.securityContextRepository(securityContextRepository()))
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf
+                .csrfTokenRepository(new org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository())
+                .ignoringRequestMatchers("/api/auth/login", "/api/auth/register", "/webhook/**")
+            )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .maximumSessions(1)
             )
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api", "/api/me", "/api/health", "/api/health/**", "/api/auth/login", "/api/auth/logout", "/api/auth/me", "/api/auth/register", "/webhook/**").permitAll()
+                .requestMatchers("/api", "/api/csrf-token", "/api/me", "/api/health", "/api/health/**", "/api/auth/login", "/api/auth/logout", "/api/auth/me", "/api/auth/register", "/webhook/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated()
             )
@@ -57,7 +60,8 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:*", "http://127.0.0.1:*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization", "X-Requested-With", "X-CSRF-TOKEN"));
+        configuration.setExposedHeaders(Arrays.asList("X-CSRF-TOKEN"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 

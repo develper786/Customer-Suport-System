@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Customer Support Management System** - A full-stack web application for managing customer support tickets with admin dashboard, email integration, and AI-powered features.
+**Customer Support Management System**- A full-stack web application for managing customer support tickets with admin dashboard, email integration, and AI-powered features.
 
 **Current Status:** Production-ready backend with PostgreSQL database integration, Spring Security authentication, and full REST API. React frontend with Vite build tool and real-time health monitoring.
 
@@ -226,7 +226,6 @@ curl -X POST http://localhost:9000/api/auth/login \
 **Frontend:**
 
 - Open http://localhost:5173
-  
 - Login with admin / admin123
 - Dashboard displays real-time backend health
 
@@ -240,6 +239,7 @@ mvn test
 ```
 
 Tests use H2 in-memory database and include:
+
 - `AuthControllerTest` - Login, logout, authentication endpoints
 - `TicketControllerTest` - CRUD operations with auth checks
 
@@ -251,7 +251,10 @@ npm test
 ```
 
 Uses Vitest + React Testing Library to test:
-- `LoginPage.test.jsx` - Form rendering, error display, loading state
+
+- `LoginPage.test.jsx` - Form rendering, error
+
+-  display, loading state
 
 **E2E Tests (3 tests):**
 
@@ -261,11 +264,13 @@ npm run test:e2e
 ```
 
 Uses Playwright (Chromium) to test full authentication flows:
+
 - Login success → dashboard redirect
 - Login failure → error message display
 - Protected route redirect to login
 
 **All Tests:**
+
 - Use test credentials: `admin` / `admin123`
 - No over-engineering - focus on critical business logic only
 - Simple, maintainable, and fast
@@ -315,6 +320,7 @@ Uses Playwright (Chromium) to test full authentication flows:
 - Registers React Testing Library matchers
 
 **Test Files:**
+
 - `src/test/LoginPage.test.jsx` - Unit tests for login component
 - `src/test/e2e/auth.spec.js` - End-to-end authentication tests
 
