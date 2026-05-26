@@ -1,14 +1,15 @@
 package com.customersupport.config;
 
-import com.customersupport.entity.User;
-import com.customersupport.entity.Ticket;
-import com.customersupport.repository.UserRepository;
-import com.customersupport.repository.TicketRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
+
+import com.customersupport.entity.Ticket;
+import com.customersupport.entity.User;
+import com.customersupport.repository.TicketRepository;
+import com.customersupport.repository.UserRepository;
+
 
 @Configuration
 public class DataInitializer {

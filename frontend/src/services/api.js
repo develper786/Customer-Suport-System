@@ -10,6 +10,16 @@ const api = axios.create({
   },
 });
 
+// Request interceptor - ensure credentials are sent with every request
+api.interceptors.request.use(
+  (config) => {
+    config.withCredentials = true;
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Response interceptor - handle auth errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
