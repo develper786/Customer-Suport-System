@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import '../styles/HealthInfo.css';
 
 export default function HealthInfo() {
@@ -11,10 +11,10 @@ export default function HealthInfo() {
   useEffect(() => {
     const fetchHealth = async () => {
       try {
-        const healthRes = await axios.get('http://localhost:9000/api/health');
+        const healthRes = await api.get('/health');
         setHealth(healthRes.data);
 
-        const infoRes = await axios.get('http://localhost:9000/api/health/info');
+        const infoRes = await api.get('/health/info');
         setInfo(infoRes.data);
 
         setError(null);
