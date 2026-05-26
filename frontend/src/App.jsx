@@ -3,7 +3,8 @@ import LoginPage from './components/LoginPage';
 import Dashboard from './components/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './components/Home';
-import Tickets from './components/Tickets';
+import TicketPage from './pages/TicketPage';
+import TicketDetailsPage from './pages/TicketDetailsPage';
 import './App.css';
 
 function App() {
@@ -16,7 +17,8 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<Navigate to="/dashboard/home" replace />} />
             <Route path="home" element={<Home />} />
-            <Route path="tickets" element={<Tickets />} />
+            <Route path="tickets" element={<TicketPage />} />
+            <Route path="tickets/:id" element={<TicketDetailsPage />} />
           </Route>
         </Route>
 

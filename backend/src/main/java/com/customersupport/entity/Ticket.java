@@ -23,6 +23,12 @@ public class Ticket {
     @Column(nullable = false)
     private String priority = "MEDIUM";
 
+    @Column(nullable = false)
+    private String category = "GENERAL";
+
+    @Column
+    private String source = "WEB";
+
     @ManyToOne
     @JoinColumn(name = "assigned_to")
     private User assignedTo;
@@ -102,6 +108,22 @@ public class Ticket {
 
     public void setPriority(String priority) {
         this.priority = priority;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public User getAssignedTo() {

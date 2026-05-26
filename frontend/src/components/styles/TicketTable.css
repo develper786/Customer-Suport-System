@@ -1,0 +1,111 @@
+.tickets-table-wrapper {
+  overflow-x: auto;
+}
+
+.tickets-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tickets-table thead {
+  background: #f7fafc;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.tickets-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.tickets-table tbody tr {
+  border-bottom: 1px solid #e2e8f0;
+  transition: background 0.2s;
+}
+
+.tickets-table tbody tr.clickable-row {
+  cursor: pointer;
+}
+
+.tickets-table tbody tr.clickable-row:hover {
+  background: #f0f4f8;
+}
+
+.tickets-table td {
+  padding: 12px;
+  color: #4a5568;
+}
+
+.ticket-id {
+  color: #a0aec0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.ticket-title {
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.ticket-customer {
+  font-size: 13px;
+  color: #718096;
+}
+
+.ticket-date {
+  font-size: 13px;
+  color: #718096;
+}
+
+.priority-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  display: inline-block;
+}
+
+.ticket-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  padding: 4px 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.action-btn:hover {
+  background: #f0f4f8;
+}
+
+.delete-btn:active {
+  transform: scale(0.95);
+}
+
+.loading-container {
+  text-align: center;
+  padding: 40px;
+  color: #718096;
+  font-size: 16px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #718096;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 16px;
+  color: #4a5568;
+}

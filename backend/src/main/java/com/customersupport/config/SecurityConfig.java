@@ -38,7 +38,7 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf
                 .csrfTokenRepository(new org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository())
-                .ignoringRequestMatchers("/api/auth/logout", "/api/auth/register", "/webhook/**")
+                .ignoringRequestMatchers("/api/auth/login", "/api/auth/logout", "/api/auth/register", "/api/webhooks/**")
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
@@ -48,7 +48,7 @@ public class SecurityConfig {
                 )
             )
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api", "/api/csrf-token", "/api/me", "/api/health", "/api/health/**", "/api/auth/login", "/api/auth/logout", "/api/auth/me", "/api/auth/register", "/webhook/**").permitAll()
+                .requestMatchers("/api", "/api/csrf-token", "/api/me", "/api/health", "/api/health/**", "/api/auth/login", "/api/auth/logout", "/api/auth/me", "/api/auth/register", "/api/webhooks/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated()
             )

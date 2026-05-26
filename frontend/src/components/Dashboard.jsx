@@ -54,7 +54,7 @@ export default function Dashboard() {
             to="/dashboard/tickets"
             className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
           >
-            Tickets
+            🎫 Ticket List
           </NavLink>
         </nav>
 
