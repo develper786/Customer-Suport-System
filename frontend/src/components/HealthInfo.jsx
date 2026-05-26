@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from '../services/api';
+import axiosInstance from '../config/axios';
 import '../styles/HealthInfo.css';
 
 export default function HealthInfo() {
@@ -11,15 +11,15 @@ export default function HealthInfo() {
   useEffect(() => {
     const fetchHealth = async () => {
       try {
-        const healthRes = await api.get('/health');
+        const healthRes = await axiosInstance.get('/health');
         setHealth(healthRes.data);
 
-        const infoRes = await api.get('/health/info');
+        const infoRes = await axiosInstance.get('/health/info');
         setInfo(infoRes.data);
 
         setError(null);
       } catch (err) {
-        setError('Failed to fetch backend health info');
+        setError(err.message || 'Failed to fetch backend health info');
         console.error('Health check error:', err);
       } finally {
         setLoading(false);

@@ -1,25 +1,30 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, NavLink, Outlet } from 'react-router-dom';
-import { authService } from '../services/api';
+import authService from '../services/auth';
 import '../styles/Dashboard.css';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
+    // Get user from localStorage or global error handling will redirect to login
+    const storedUser = authService.getStoredUser();
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      setUser(storedUser);
+    } else {
+      navigate('/login');
     }
-  }, []);
+  }, [navigate]);
 
   const handleLogout = async () => {
     try {
+      setError('');
       await authService.logout();
-      localStorage.removeItem('user');
       navigate('/login');
     } catch (err) {
+      setError(err.message || 'Logout failed');
       console.error('Logout failed:', err);
     }
   };
@@ -28,6 +33,8 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-container">
+      {error && <div className="error-banner">{error}</div>}
+
       <aside className="sidebar">
         <div className="sidebar-header">
           <h2>Customer Support</h2>

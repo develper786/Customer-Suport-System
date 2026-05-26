@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '../services/api';
+import authService from '../services/auth';
 import '../styles/LoginPage.css';
 
 export default function LoginPage() {
@@ -16,11 +16,12 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await authService.login(username, password);
-      localStorage.setItem('user', JSON.stringify(response.data));
+      // authService.login handles localStorage and global error handling
+      await authService.login(username, password);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      // Global error handling from axios interceptors
+      setError(err.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }

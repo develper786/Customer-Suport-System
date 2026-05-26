@@ -1,57 +1,24 @@
-import axios from 'axios';
+/**
+ * API Services Barrel Export
+ * Re-exports all service modules for backward compatibility
+ *
+ * Instead of importing from this file, consider importing directly from:
+ * - import authService from './services/auth'
+ * - import ticketService from './services/tickets'
+ * - import metricsService from './services/metrics'
+ * - import axiosInstance from './config/axios'
+ */
 
-const API_BASE_URL = 'http://localhost:9000/api';
+import axiosInstance from '../config/axios';
+import authService from './auth';
+import ticketService from './tickets';
+import metricsService from './metrics';
 
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+// Re-export all services for backward compatibility
+export { authService, ticketService, metricsService };
 
-// Request interceptor - ensure credentials are sent with every request
-api.interceptors.request.use(
-  (config) => {
-    config.withCredentials = true;
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+// Export axios instance for direct usage if needed
+export { axiosInstance };
 
-// Response interceptor - handle auth errors
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('user');
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
-);
-
-export const authService = {
-  login: (username, password) =>
-    api.post('/auth/login', { username, password }),
-  logout: () => api.post('/auth/logout'),
-  getCurrentUser: () => api.get('/me'), // Uses /api/me shortcut endpoint
-  getCurrentUserAlt: () => api.get('/auth/me'), // Alternative: /api/auth/me
-};
-
-export const ticketService = {
-  getTickets: (filters = {}) => api.get('/tickets', { params: filters }),
-  getTicketById: (id) => api.get(`/tickets/${id}`),
-  createTicket: (data) => api.post('/tickets', data),
-  updateTicket: (id, data) => api.patch(`/tickets/${id}`, data),
-  replyToTicket: (id, reply) => api.post(`/tickets/${id}/reply`, reply),
-};
-
-export const metricsService = {
-  getOverview: () => api.get('/metrics/overview'),
-  getVolume: (period = 'day') => api.get('/metrics/volume', { params: { period } }),
-  getResponseTimes: () => api.get('/metrics/response-times'),
-  getResolution: () => api.get('/metrics/resolution'),
-};
-
-export default api;
+// Default export for backward compatibility
+export default axiosInstance;
