@@ -10,17 +10,20 @@ const STATUSES = [
 ];
 
 export default function StatusActions({ ticket, onStatusChange, updating }) {
+  const currentStatus = ticket?.status || 'OPEN';
+
   return (
     <div className="status-actions">
       <div className="action-section">
         <label htmlFor="status-select">Update Status:</label>
         <select
           id="status-select"
-          value={ticket.status}
+          value={currentStatus}
           onChange={(e) => onStatusChange(e.target.value)}
           disabled={updating}
           className="status-select"
         >
+          <option value="" disabled>-- Select Status --</option>
           {STATUSES.map(status => (
             <option key={status} value={status}>
               {status.replace(/_/g, ' ')}
