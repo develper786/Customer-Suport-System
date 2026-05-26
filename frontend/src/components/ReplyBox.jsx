@@ -1,10 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './styles/ReplyBox.css';
 
 export default function ReplyBox({
   ticketId, onReplySubmit, loading }) {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const user = sessionStorage.getItem('user');
+    if (user) {
+      const userData = JSON.parse(user);
+      setCurrentUser(userData);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,7 +27,7 @@ export default function ReplyBox({
       await onReplySubmit({
         body: message,
         senderType: 'AGENT',
-        senderName: 'Agent',
+        senderName: currentUser?.username || 'Agent',
       });
       setMessage('');
     } catch (err) {
