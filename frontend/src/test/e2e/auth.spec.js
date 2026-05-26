@@ -24,14 +24,16 @@ test.describe('Authentication E2E Tests', () => {
     await expect(errorMessage).toContainText('Invalid');
   });
 
-  test('protectedRoute_redirectsToLogin_whenNotAuthenticated', async ({ page }) => {
-    // Clear any existing localStorage
-    await page.evaluate(() => localStorage.clear());
+  test('protectedRoute_redirectsToLogin_whenNotAuthenticated', async ({ context, page }) => {
+    // Use a new context to ensure no stored user data
+    const newContext = await context.browser().newContext();
+    const newPage = await newContext.newPage();
 
-    await page.goto('/dashboard');
+    await newPage.goto('/dashboard');
 
     // Should redirect to /login
-    await page.waitForURL('**/login');
-    expect(page.url()).toContain('/login');
+    await newPage.waitForURL('**/login');
+    expect(newPage.url()).toContain('/login');
+    await newContext.close();
   });
 });
