@@ -25,7 +25,8 @@ export const authService = {
   login: (username, password) =>
     api.post('/auth/login', { username, password }),
   logout: () => api.post('/auth/logout'),
-  getCurrentUser: () => api.get('/auth/me'),
+  getCurrentUser: () => api.get('/me'), // Uses /api/me shortcut endpoint
+  getCurrentUserAlt: () => api.get('/auth/me'), // Alternative: /api/auth/me
 };
 
 export const ticketService = {
