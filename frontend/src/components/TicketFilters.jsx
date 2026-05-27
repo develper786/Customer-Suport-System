@@ -1,29 +1,5 @@
+import { STATUS_OPTIONS, PRIORITY_OPTIONS, CATEGORY_OPTIONS } from '../constants/appConstants';
 import './styles/TicketFilters.css';
-
-const STATUSES = [
-  { value: '', label: 'All Tickets' },
-  { value: 'OPEN', label: 'Open' },
-  { value: 'AI_RESPONDED', label: 'AI Responded' },
-  { value: 'PENDING_HUMAN', label: 'Pending Human' },
-  { value: 'IN_PROGRESS', label: 'In Progress' },
-  { value: 'RESOLVED', label: 'Resolved' },
-];
-
-const PRIORITIES = [
-  { value: '', label: 'All Priorities' },
-  { value: 'LOW', label: 'Low' },
-  { value: 'MEDIUM', label: 'Medium' },
-  { value: 'HIGH', label: 'High' },
-];
-
-const CATEGORIES = [
-  { value: '', label: 'All Categories' },
-  { value: 'BILLING', label: 'Billing' },
-  { value: 'TECHNICAL', label: 'Technical' },
-  { value: 'ACCOUNT', label: 'Account' },
-  { value: 'FEATURE_REQUEST', label: 'Feature Request' },
-  { value: 'GENERAL', label: 'General' },
-];
 
 export default function TicketFilters({ statusFilter, priorityFilter, categoryFilter, onStatusChange, onPriorityChange, onCategoryChange }) {
   return (
@@ -36,7 +12,7 @@ export default function TicketFilters({ statusFilter, priorityFilter, categoryFi
           onChange={(e) => onStatusChange(e.target.value)}
           className="filter-select"
         >
-          {STATUSES.map(status => (
+          {STATUS_OPTIONS.map(status => (
             <option key={status.value} value={status.value}>
               {status.label}
             </option>
@@ -52,7 +28,7 @@ export default function TicketFilters({ statusFilter, priorityFilter, categoryFi
           onChange={(e) => onPriorityChange(e.target.value)}
           className="filter-select"
         >
-          {PRIORITIES.map(priority => (
+          {PRIORITY_OPTIONS.map(priority => (
             <option key={priority.value} value={priority.value}>
               {priority.label}
             </option>
@@ -68,7 +44,7 @@ export default function TicketFilters({ statusFilter, priorityFilter, categoryFi
           onChange={(e) => onCategoryChange(e.target.value)}
           className="filter-select"
         >
-          {CATEGORIES.map(category => (
+          {CATEGORY_OPTIONS.map(category => (
             <option key={category.value} value={category.value}>
               {category.label}
             </option>

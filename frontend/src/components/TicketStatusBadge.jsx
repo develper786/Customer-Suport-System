@@ -1,14 +1,9 @@
-const STATUS_COLORS = {
-  OPEN: { bg: '#38a169', text: '#fff' },
-  AI_RESPONDED: { bg: '#3182ce', text: '#fff' },
-  PENDING_HUMAN: { bg: '#d69e2e', text: '#fff' },
-  IN_PROGRESS: { bg: '#9f7aea', text: '#fff' },
-  RESOLVED: { bg: '#718096', text: '#fff' },
-};
+import { STATUS_COLORS } from '../constants/appConstants';
 
 export default function TicketStatusBadge({ status }) {
   const safeStatus = status || 'OPEN';
-  const colors = STATUS_COLORS[safeStatus] || { bg: '#cbd5e0', text: '#2d3748' };
+  const colorObj = STATUS_COLORS[safeStatus];
+  const colors = colorObj ? { bg: colorObj.bg, text: colorObj.text } : { bg: '#cbd5e0', text: '#2d3748' };
 
   return (
     <span

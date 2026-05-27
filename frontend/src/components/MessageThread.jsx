@@ -1,12 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { formatDateTime } from '../utils/dateUtils';
+import { SENDER_COLORS } from '../constants/appConstants';
 import './styles/MessageThread.css';
-
-const SENDER_COLORS = {
-  CUSTOMER: { bg: '#f0fdf4', border: '#38a169' },
-  AGENT: { bg: '#edf2f7', border: '#667eea' },
-  AI: { bg: '#f9f0ff', border: '#a855f7' },
-};
 
 export default function MessageThread({ messages, loading }) {
   const threadEndRef = useRef(null);

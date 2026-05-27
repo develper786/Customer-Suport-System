@@ -1,21 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { formatDateTime } from '../utils/dateUtils';
+import { STATUS_COLORS, PRIORITY_COLORS } from '../constants/appConstants';
 import ticketService from '../services/tickets';
 import '../styles/TicketDetail.css';
-
-const STATUS_COLORS = {
-  OPEN: '#38a169',
-  AI_RESPONDED: '#3182ce',
-  PENDING_HUMAN: '#d69e2e',
-  IN_PROGRESS: '#9f7aea',
-  RESOLVED: '#718096',
-};
-
-const PRIORITY_COLORS = {
-  HIGH: '#e53e3e',
-  MEDIUM: '#dd6b20',
-  LOW: '#3182ce',
-};
 
 export default function TicketDetail({ ticket, onBack, onUpdated }) {
   const [threads, setThreads] = useState([]);
@@ -132,7 +119,7 @@ export default function TicketDetail({ ticket, onBack, onUpdated }) {
           </select>
           <span
             className="status-badge"
-            style={{ backgroundColor: STATUS_COLORS[currentTicket.status] }}
+            style={{ backgroundColor: STATUS_COLORS[currentTicket.status]?.hex || '#cbd5e0' }}
           >
             {currentTicket.status.replace(/_/g, ' ')}
           </span>

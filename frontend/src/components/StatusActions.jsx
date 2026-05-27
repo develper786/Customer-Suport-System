@@ -1,13 +1,6 @@
+import { STATUS_VALUES } from '../constants/appConstants';
 import TicketStatusBadge from './TicketStatusBadge';
 import './styles/StatusActions.css';
-
-const STATUSES = [
-  'OPEN',
-  'AI_RESPONDED',
-  'PENDING_HUMAN',
-  'IN_PROGRESS',
-  'RESOLVED',
-];
 
 export default function StatusActions({ ticket, onStatusChange, updating }) {
   const currentStatus = ticket?.status || 'OPEN';
@@ -24,7 +17,7 @@ export default function StatusActions({ ticket, onStatusChange, updating }) {
           className="status-select"
         >
           <option value="" disabled>-- Select Status --</option>
-          {STATUSES.map(status => (
+          {STATUS_VALUES.map(status => (
             <option key={status} value={status}>
               {status.replace(/_/g, ' ')}
             </option>

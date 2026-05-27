@@ -1,13 +1,8 @@
 import { formatDate } from '../utils/dateUtils';
+import { PRIORITY_COLORS } from '../constants/appConstants';
 import TicketStatusBadge from './TicketStatusBadge';
 import TicketCategoryBadge from './TicketCategoryBadge';
 import './styles/TicketTable.css';
-
-const PRIORITY_COLORS = {
-  HIGH: '#e53e3e',
-  MEDIUM: '#dd6b20',
-  LOW: '#3182ce',
-};
 
 export default function TicketTable({ tickets, onRowClick, onDelete, loading }) {
 

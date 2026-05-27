@@ -1,23 +1,10 @@
 import { useState, useEffect } from 'react';
 import { formatDate } from '../utils/dateUtils';
+import { STATUS_COLORS, PRIORITY_COLORS } from '../constants/appConstants';
 import ticketService from '../services/tickets';
 import TicketModal from './TicketModal';
 import TicketDetail from './TicketDetail';
 import '../styles/Tickets.css';
-
-const STATUS_COLORS = {
-  OPEN: '#38a169',
-  AI_RESPONDED: '#3182ce',
-  PENDING_HUMAN: '#d69e2e',
-  IN_PROGRESS: '#9f7aea',
-  RESOLVED: '#718096',
-};
-
-const PRIORITY_COLORS = {
-  HIGH: '#e53e3e',
-  MEDIUM: '#dd6b20',
-  LOW: '#3182ce',
-};
 
 export default function Tickets() {
   const [tickets, setTickets] = useState([]);
@@ -190,7 +177,7 @@ export default function Tickets() {
                   <td>
                     <span
                       className="badge status-badge"
-                      style={{ backgroundColor: STATUS_COLORS[ticket.status] }}
+                      style={{ backgroundColor: STATUS_COLORS[ticket.status]?.hex || '#cbd5e0' }}
                     >
                       {ticket.status.replace(/_/g, ' ')}
                     </span>
