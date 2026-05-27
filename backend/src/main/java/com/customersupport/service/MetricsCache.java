@@ -6,6 +6,7 @@ import com.customersupport.repository.TicketRepository;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -30,7 +31,8 @@ public class MetricsCache {
         refreshMetrics();
     }
 
-    @Scheduled(fixedRate = 300000) // 5 minutes
+    @Scheduled(initialDelay = 0, fixedRate = 300_000) //5
+    @Transactional
     public void refreshMetrics() {
         refreshOverview();
         refreshVolumeTrend();
