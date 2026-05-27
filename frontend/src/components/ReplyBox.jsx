@@ -18,38 +18,46 @@ export default function ReplyBox({
     }
   }, []);
 
-  const getValidationStatus = () => {
-    const trimmedMessage = message.trim();
-    const length = trimmedMessage.length;
+  const validateMessage = () => {
+    const isTrimmed = message.trim();
+    const charCount = isTrimmed.length;
 
-    if (!trimmedMessage) {
-      return { isValid: false, message: '', state: 'empty' };
-    }
-
-    if (length < MIN_LENGTH) {
-      return {
-        isValid: false,
-        message: `Minimum ${MIN_LENGTH} characters required (${length}/${MIN_LENGTH})`,
-        state: 'too-short',
-      };
-    }
-
-    if (length > MAX_LENGTH) {
-      return {
-        isValid: false,
-        message: `Maximum ${MAX_LENGTH} characters allowed (${length}/${MAX_LENGTH})`,
-        state: 'too-long',
-      };
-    }
-
-    return {
-      isValid: true,
-      message: `${length}/${MAX_LENGTH} characters`,
-      state: 'valid',
+    const validation = {
+      isTrimmed: !!isTrimmed,
+      charCount: charCount,
+      isTooShort: charCount > 0 && charCount < MIN_LENGTH,
+      isTooLong: charCount > MAX_LENGTH,
+      isValid: charCount >= MIN_LENGTH && charCount <= MAX_LENGTH,
+      message: '',
+      state: 'empty',
     };
+
+    // Determine state and message
+    if (!validation.isTrimmed) {
+      validation.state = 'empty';
+      validation.message = '';
+    } else if (validation.isTooShort) {
+      validation.state = 'too-short';
+      validation.message = `Minimum ${MIN_LENGTH} characters required (${charCount}/${MIN_LENGTH})`;
+    } else if (validation.isTooLong) {
+      validation.state = 'too-long';
+      validation.message = `Maximum ${MAX_LENGTH} characters allowed (${charCount}/${MAX_LENGTH})`;
+    } else {
+      validation.state = 'valid';
+      validation.message = `${charCount}/${MAX_LENGTH} characters`;
+    }
+
+    return validation;
   };
 
-  const validation = getValidationStatus();
+  const validation = validateMessage();
+
+  const handleMessageChange = (e) => {
+    const newMessage = e.target.value;
+    if (newMessage.length <= MAX_LENGTH) {
+      setMessage(newMessage);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -62,7 +70,7 @@ export default function ReplyBox({
     setError('');
     try {
       await onReplySubmit({
-        body: message,
+        body: message.trim(),
         senderType: 'AGENT',
         senderName: currentUser?.username || 'Agent',
       });
@@ -80,7 +88,7 @@ export default function ReplyBox({
         <div className="textarea-wrapper">
           <textarea
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={handleMessageChange}
             placeholder="Type your reply here (minimum 20 characters, maximum 700)..."
             disabled={loading}
             rows="4"
@@ -92,12 +100,22 @@ export default function ReplyBox({
           </div>
         </div>
 
+        <div className="validation-info">
+          {validation.isTrimmed && (
+            <span className={`validation-badge ${validation.state}`}>
+              {validation.isTooShort && '⚠️ Too short'}
+              {validation.isTooLong && '❌ Too long'}
+              {validation.isValid && '✅ Valid'}
+            </span>
+          )}
+        </div>
+
         <div className="reply-actions">
           <button
             type="submit"
             className="btn-primary"
             disabled={loading || !validation.isValid}
-            title={!validation.isValid ? validation.message : 'Send reply'}
+            title={!validation.isValid ? validation.message || 'Message must be between 20 and 700 characters' : 'Send reply'}
           >
             {loading ? 'Sending...' : 'Send Reply'}
           </button>
