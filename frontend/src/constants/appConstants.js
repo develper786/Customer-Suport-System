@@ -1,9 +1,9 @@
 export const STATUS_COLORS = {
-  OPEN: { bg: '#38a169', text: '#fff' },
-  AI_RESPONDED: { bg: '#3182ce', text: '#fff' },
-  PENDING_HUMAN: { bg: '#d69e2e', text: '#fff' },
-  IN_PROGRESS: { bg: '#9f7aea', text: '#fff' },
-  RESOLVED: { bg: '#718096', text: '#fff' },
+  OPEN: { bg: '#38a169', text: '#fff', hex: '#38a169' },
+  AI_RESPONDED: { bg: '#3182ce', text: '#fff', hex: '#3182ce' },
+  PENDING_HUMAN: { bg: '#d69e2e', text: '#fff', hex: '#d69e2e' },
+  IN_PROGRESS: { bg: '#9f7aea', text: '#fff', hex: '#9f7aea' },
+  RESOLVED: { bg: '#718096', text: '#fff', hex: '#718096' },
 };
 
 // Simple hex colors for status (used for badges in tables/lists)
@@ -22,11 +22,11 @@ export const PRIORITY_COLORS = {
 };
 
 export const CATEGORY_COLORS = {
-  BILLING: { bg: '#e6f7ff', text: '#0050b3' },
-  TECHNICAL: { bg: '#f5f5f5', text: '#262626' },
-  ACCOUNT: { bg: '#f9f0ff', text: '#7c3aed' },
-  FEATURE_REQUEST: { bg: '#f0f9ff', text: '#0284c7' },
-  GENERAL: { bg: '#f5f5f5', text: '#525252' },
+  BILLING: { bg: '#e6f7ff', text: '#0050b3', hex: '#1890ff' },
+  TECHNICAL: { bg: '#f5f5f5', text: '#262626', hex: '#8c8c8c' },
+  ACCOUNT: { bg: '#f9f0ff', text: '#7c3aed', hex: '#7c3aed' },
+  FEATURE_REQUEST: { bg: '#f0f9ff', text: '#0284c7', hex: '#0284c7' },
+  GENERAL: { bg: '#f5f5f5', text: '#525252', hex: '#525252' },
 };
 
 export const SENDER_COLORS = {

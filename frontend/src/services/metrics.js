@@ -2,34 +2,64 @@ import axiosInstance from '../config/axios';
 
 const METRICS_ENDPOINTS = {
   GET_OVERVIEW: '/metrics/overview',
+  GET_VOLUME_TREND: '/metrics/volume-trend',
+  GET_AI_RATIO: '/metrics/ai-ratio',
+  GET_RESPONSE_TIME: '/metrics/response-time',
+  GET_RECENT_TICKETS: '/metrics/recent-tickets',
   GET_VOLUME: '/metrics/volume',
   GET_RESPONSE_TIMES: '/metrics/response-times',
   GET_RESOLUTION: '/metrics/resolution',
 };
 
-/**
- * Metrics Service
- * Handles all dashboard metrics API calls
- */
 export const metricsService = {
-  /**
-   * Get dashboard overview metrics
-   * @returns {Promise} Overview data (total tickets, open, resolved, etc.)
-   */
   getOverview: async () => {
     try {
       const response = await axiosInstance.get(METRICS_ENDPOINTS.GET_OVERVIEW);
-      return response.data;
+      return response.data.data;
     } catch (error) {
       throw new Error(error.message || 'Failed to fetch overview metrics');
     }
   },
 
-  /**
-   * Get ticket volume metrics
-   * @param {string} period - Time period ('day', 'week', 'month', etc.)
-   * @returns {Promise} Volume data
-   */
+  getVolumeTrend: async (period = 'daily') => {
+    try {
+      const response = await axiosInstance.get(METRICS_ENDPOINTS.GET_VOLUME_TREND, {
+        params: { period },
+      });
+      return response.data.data;
+    } catch (error) {
+      throw new Error(error.message || 'Failed to fetch volume trend metrics');
+    }
+  },
+
+  getAIRatio: async () => {
+    try {
+      const response = await axiosInstance.get(METRICS_ENDPOINTS.GET_AI_RATIO);
+      return response.data.data;
+    } catch (error) {
+      throw new Error(error.message || 'Failed to fetch AI ratio metrics');
+    }
+  },
+
+  getResponseTime: async () => {
+    try {
+      const response = await axiosInstance.get(METRICS_ENDPOINTS.GET_RESPONSE_TIME);
+      return response.data.data;
+    } catch (error) {
+      throw new Error(error.message || 'Failed to fetch response time metrics');
+    }
+  },
+
+  getRecentTickets: async () => {
+    try {
+      const response = await axiosInstance.get(METRICS_ENDPOINTS.GET_RECENT_TICKETS);
+      return response.data.data;
+    } catch (error) {
+      throw new Error(error.message || 'Failed to fetch recent tickets');
+    }
+  },
+
+  // Legacy endpoints (kept for backward compatibility)
   getVolume: async (period = 'day') => {
     try {
       const response = await axiosInstance.get(METRICS_ENDPOINTS.GET_VOLUME, {
@@ -41,10 +71,6 @@ export const metricsService = {
     }
   },
 
-  /**
-   * Get response time metrics
-   * @returns {Promise} Response time data
-   */
   getResponseTimes: async () => {
     try {
       const response = await axiosInstance.get(METRICS_ENDPOINTS.GET_RESPONSE_TIMES);
@@ -54,10 +80,6 @@ export const metricsService = {
     }
   },
 
-  /**
-   * Get resolution metrics
-   * @returns {Promise} Resolution data (resolved rate, avg resolution time, etc.)
-   */
   getResolution: async () => {
     try {
       const response = await axiosInstance.get(METRICS_ENDPOINTS.GET_RESOLUTION);

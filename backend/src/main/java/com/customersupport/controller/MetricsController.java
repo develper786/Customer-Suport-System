@@ -1,6 +1,7 @@
 package com.customersupport.controller;
 
-import com.customersupport.repository.TicketRepository;
+import com.customersupport.dto.*;
+import com.customersupport.service.MetricsCache;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,55 +13,69 @@ import java.util.Map;
 @CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "http://localhost:5176", "http://localhost:5177", "http://127.0.0.1:5173"}, allowCredentials = "true")
 public class MetricsController {
 
-    private final TicketRepository ticketRepository;
+    private final MetricsCache metricsCache;
 
-    public MetricsController(TicketRepository ticketRepository) {
-        this.ticketRepository = ticketRepository;
+    public MetricsController(MetricsCache metricsCache) {
+        this.metricsCache = metricsCache;
     }
 
     @GetMapping("/overview")
-    public ResponseEntity<?> getOverview() {
-        Map<String, Object> metrics = new HashMap<>();
-
-        long totalTickets = ticketRepository.count();
-        long openTickets = ticketRepository.countOpenTickets();
-        long pendingTickets = ticketRepository.countPendingTickets();
-        long resolvedTickets = ticketRepository.countResolvedTickets();
-
-        metrics.put("total", totalTickets);
-        metrics.put("open", openTickets);
-        metrics.put("pending", pendingTickets);
-        metrics.put("resolved", resolvedTickets);
-        metrics.put("resolution_rate", totalTickets > 0 ? ((double) resolvedTickets / totalTickets) * 100 : 0);
-
-        return ResponseEntity.ok(metrics);
+    public ResponseEntity<ApiResponse<MetricsOverviewResponse>> getOverview() {
+        return ResponseEntity.ok(new ApiResponse<>(true, "Metrics overview", metricsCache.getOverview()));
     }
 
+    @GetMapping("/volume-trend")
+    public ResponseEntity<ApiResponse<TicketVolumeResponse>> getVolumeTrend(@RequestParam(defaultValue = "daily") String period) {
+        return ResponseEntity.ok(new ApiResponse<>(true, "Volume trend", metricsCache.getVolumeTrend()));
+    }
+
+    @GetMapping("/ai-ratio")
+    public ResponseEntity<ApiResponse<AIHandledResponse>> getAIRatio() {
+        return ResponseEntity.ok(new ApiResponse<>(true, "AI vs agent handled ratio", metricsCache.getAIRatio()));
+    }
+
+    @GetMapping("/response-time")
+    public ResponseEntity<ApiResponse<ResponseTimeResponse>> getResponseTime() {
+        return ResponseEntity.ok(new ApiResponse<>(true, "Response time metrics", metricsCache.getResponseTime()));
+    }
+
+    @GetMapping("/recent-tickets")
+    public ResponseEntity<ApiResponse<java.util.List<RecentTicketResponse>>> getRecentTickets() {
+        return ResponseEntity.ok(new ApiResponse<>(true, "Recent tickets", metricsCache.getRecentTickets()));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<String>> refreshMetrics() {
+        metricsCache.refreshNow();
+        return ResponseEntity.ok(new ApiResponse<>(true, "Metrics refreshed successfully", "Metrics refreshed"));
+    }
+
+    // Legacy endpoints (kept for backward compatibility)
     @GetMapping("/volume")
     public ResponseEntity<?> getVolume(@RequestParam(defaultValue = "day") String period) {
+        MetricsOverviewResponse overview = metricsCache.getOverview();
         Map<String, Object> volume = new HashMap<>();
-        long total = ticketRepository.count();
-
         volume.put("period", period);
-        volume.put("count", total);
-        volume.put("average_per_day", total > 0 ? total / 7 : 0);
-
+        volume.put("count", overview.total());
+        volume.put("average_per_day", overview.total() > 0 ? overview.total() / 7 : 0);
         return ResponseEntity.ok(volume);
     }
 
     @GetMapping("/response-times")
     public ResponseEntity<?> getResponseTimes() {
-        Map<String, Object> times = new HashMap<>();
-        times.put("average_first_response", "2 hours");
-        times.put("average_resolution", "24 hours");
-        times.put("p95", "4 hours");
-        return ResponseEntity.ok(times);
+        ResponseTimeResponse times = metricsCache.getResponseTime();
+        Map<String, Object> result = new HashMap<>();
+        result.put("average_first_response", String.format("%.1f hours", times.averageFirstResponseHours()));
+        result.put("average_resolution", String.format("%.1f hours", times.averageResolutionHours()));
+        result.put("p95", "4 hours");
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/resolution")
     public ResponseEntity<?> getResolution() {
+        MetricsOverviewResponse overview = metricsCache.getOverview();
         Map<String, Object> resolution = new HashMap<>();
-        resolution.put("this_month", ticketRepository.countResolvedTickets());
+        resolution.put("this_month", overview.byStatus().getOrDefault("RESOLVED", 0L));
         resolution.put("this_week", 5);
         resolution.put("today", 2);
         return ResponseEntity.ok(resolution);
