@@ -1,3 +1,4 @@
+import { formatDate } from '../utils/dateUtils';
 import TicketStatusBadge from './TicketStatusBadge';
 import TicketCategoryBadge from './TicketCategoryBadge';
 import './styles/TicketTable.css';
@@ -9,11 +10,6 @@ const PRIORITY_COLORS = {
 };
 
 export default function TicketTable({ tickets, onRowClick, onDelete, loading }) {
-  const formatDate = (dateString) => {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  };
 
   if (loading) {
     return <div className="loading-container">Loading tickets...</div>;

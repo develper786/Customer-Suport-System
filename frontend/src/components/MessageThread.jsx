@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react';
+import { formatDateTime } from '../utils/dateUtils';
 import './styles/MessageThread.css';
 
 const SENDER_COLORS = {
@@ -13,17 +14,6 @@ export default function MessageThread({ messages, loading }) {
   useEffect(() => {
     threadEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
-
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
 
   if (loading) {
     return <div className="thread-loading">Loading messages...</div>;
@@ -52,7 +42,7 @@ export default function MessageThread({ messages, loading }) {
           >
             <div className="message-header">
               <strong className="sender-name">{msg.senderName}</strong>
-              <span className="message-time">{formatDate(msg.sentAt)}</span>
+              <span className="message-time">{formatDateTime(msg.sentAt)}</span>
             </div>
             <div className="message-body">{msg.body}</div>
           </div>

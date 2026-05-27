@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { formatDateTime } from '../utils/dateUtils';
 import ticketService from '../services/tickets';
 import MessageThread from '../components/MessageThread';
 import ReplyBox from '../components/ReplyBox';
@@ -80,17 +81,6 @@ export default function TicketDetailsPage() {
     );
   }
 
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
 
   return (
     <div className="ticket-details-page">
@@ -107,10 +97,10 @@ export default function TicketDetailsPage() {
               <TicketCategoryBadge category={ticket.category || 'GENERAL'} />
             </span>
             <span className="meta-item">
-              Created {formatDate(ticket.createdAt)}
+              Created {formatDateTime(ticket.createdAt)}
             </span>
             <span className="meta-item">
-              Updated {formatDate(ticket.updatedAt)}
+              Updated {formatDateTime(ticket.updatedAt)}
             </span>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { formatDate } from '../utils/dateUtils';
 import ticketService from '../services/tickets';
 import TicketModal from './TicketModal';
 import TicketDetail from './TicketDetail';
@@ -86,11 +87,6 @@ export default function Tickets() {
     loadTickets();
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  };
 
   if (selectedTicket) {
     return (

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { formatDateTime } from '../utils/dateUtils';
 import ticketService from '../services/tickets';
 import '../styles/TicketDetail.css';
 
@@ -91,17 +92,6 @@ export default function TicketDetail({ ticket, onBack, onUpdated }) {
     }
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
 
   return (
     <div className="ticket-detail-container">
@@ -118,7 +108,7 @@ export default function TicketDetail({ ticket, onBack, onUpdated }) {
               {currentTicket.customerName || currentTicket.customerEmail || 'Unknown'}
             </span>
             <span className="ticket-date">
-              Created {formatDate(currentTicket.createdAt)}
+              Created {formatDateTime(currentTicket.createdAt)}
             </span>
           </div>
         </div>
@@ -182,7 +172,7 @@ export default function TicketDetail({ ticket, onBack, onUpdated }) {
               >
                 <div className="message-header">
                   <strong className="sender-name">{msg.senderName}</strong>
-                  <span className="message-time">{formatDate(msg.createdAt)}</span>
+                  <span className="message-time">{formatDateTime(msg.createdAt)}</span>
                 </div>
                 <div className="message-body">{msg.message}</div>
               </div>
