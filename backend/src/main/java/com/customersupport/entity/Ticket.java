@@ -2,6 +2,8 @@ package com.customersupport.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tickets")
@@ -28,6 +30,9 @@ public class Ticket {
 
     @Column
     private String source = "WEB";
+
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Message> messages = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "assigned_to")
@@ -164,5 +169,23 @@ public class Ticket {
 
     public void setResolvedAt(LocalDateTime resolvedAt) {
         this.resolvedAt = resolvedAt;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
+
+    public void addMessage(Message message) {
+        messages.add(message);
+        message.setTicket(this);
+    }
+
+    public void removeMessage(Message message) {
+        messages.remove(message);
+        message.setTicket(null);
     }
 }
