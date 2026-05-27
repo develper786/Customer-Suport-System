@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.customersupport.entity.Ticket;
 import com.customersupport.entity.Message;
@@ -13,7 +14,6 @@ import com.customersupport.repository.TicketRepository;
 import com.customersupport.repository.MessageRepository;
 import com.customersupport.repository.UserRepository;
 
-
 @Configuration
 public class DataInitializer {
 
@@ -22,34 +22,52 @@ public class DataInitializer {
             UserRepository userRepository,
             TicketRepository ticketRepository,
             MessageRepository messageRepository,
-            PasswordEncoder passwordEncoder) {
-        return args -> {
+            PasswordEncoder passwordEncoder,
+            DefaultCredentialsProperties credentialsProperties) {
+        return args -> initializeDatabaseWithTransactionManagement(
+                userRepository,
+                ticketRepository,
+                messageRepository,
+                passwordEncoder,
+                credentialsProperties);
+    }
+
+    @Transactional
+    private void initializeDatabaseWithTransactionManagement(
+            UserRepository userRepository,
+            TicketRepository ticketRepository,
+            MessageRepository messageRepository,
+            PasswordEncoder passwordEncoder,
+            DefaultCredentialsProperties credentialsProperties) {
+
+        try {
             // Check if admin user already exists
-            if (userRepository.findByUsername("admin").isEmpty()) {
-                // Create admin user
+            if (userRepository.findByUsername(credentialsProperties.getAdmin().getUsername()).isEmpty()) {
+
+                // Create admin user from properties
                 User admin = new User();
-                admin.setUsername("admin");
-                admin.setPassword(passwordEncoder.encode("admin123"));
-                admin.setRole("ROLE_ADMIN");
+                admin.setUsername(credentialsProperties.getAdmin().getUsername());
+                admin.setPassword(passwordEncoder.encode(credentialsProperties.getAdmin().getPassword()));
+                admin.setRole(credentialsProperties.getAdmin().getRole());
                 admin.setEnabled(true);
                 userRepository.save(admin);
-                System.out.println("✓ Admin user created (username: admin, password: admin123)");
+                System.out.println("✓ Admin user created (username: " + admin.getUsername() + ")");
 
-                // Create sample support agent
-                User agent = new User();
-                agent.setUsername("support");
-                agent.setPassword(passwordEncoder.encode("support123"));
-                agent.setRole("ROLE_AGENT");
-                agent.setEnabled(true);
-                userRepository.save(agent);
-                System.out.println("✓ Support agent created (username: support, password: support123)");
+                // Create support agent from properties
+                User support = new User();
+                support.setUsername(credentialsProperties.getSupport().getUsername());
+                support.setPassword(passwordEncoder.encode(credentialsProperties.getSupport().getPassword()));
+                support.setRole(credentialsProperties.getSupport().getRole());
+                support.setEnabled(true);
+                userRepository.save(support);
+                System.out.println("✓ Support agent created (username: " + support.getUsername() + ")");
 
                 // Create sample tickets with thread messages
                 Ticket ticket1 = new Ticket("Login not working", "Cannot login with credentials", "customer1@example.com", "John Doe");
                 ticket1.setStatus("PENDING_HUMAN");
                 ticket1.setPriority("HIGH");
                 ticket1.setCategory("ACCOUNT");
-                ticket1.setAssignedTo(agent);
+                ticket1.setAssignedTo(support);
                 Ticket saved1 = ticketRepository.save(ticket1);
 
                 // Add sample messages for ticket1
@@ -60,7 +78,7 @@ public class DataInitializer {
                 ticket2.setStatus("AI_RESPONDED");
                 ticket2.setPriority("MEDIUM");
                 ticket2.setCategory("ACCOUNT");
-                ticket2.setAssignedTo(agent);
+                ticket2.setAssignedTo(support);
                 Ticket saved2 = ticketRepository.save(ticket2);
 
                 // Add sample messages for ticket2
@@ -82,6 +100,10 @@ public class DataInitializer {
                 System.out.println("✓ Sample tickets created");
                 System.out.println("✓ Sample ticket messages created");
             }
-        };
+        } catch (Exception e) {
+            System.err.println("Error during data initialization: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 }
