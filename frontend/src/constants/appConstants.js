@@ -1,9 +1,18 @@
 export const STATUS_COLORS = {
-  OPEN: { hex: '#38a169', bg: '#f0fdf4', text: '#fff' },
-  AI_RESPONDED: { hex: '#3182ce', bg: '#dbeafe', text: '#fff' },
-  PENDING_HUMAN: { hex: '#d69e2e', bg: '#fef3c7', text: '#fff' },
-  IN_PROGRESS: { hex: '#9f7aea', bg: '#f3e8ff', text: '#fff' },
-  RESOLVED: { hex: '#718096', bg: '#f3f4f6', text: '#fff' },
+  OPEN: { bg: '#38a169', text: '#fff' },
+  AI_RESPONDED: { bg: '#3182ce', text: '#fff' },
+  PENDING_HUMAN: { bg: '#d69e2e', text: '#fff' },
+  IN_PROGRESS: { bg: '#9f7aea', text: '#fff' },
+  RESOLVED: { bg: '#718096', text: '#fff' },
+};
+
+// Simple hex colors for status (used for badges in tables/lists)
+export const STATUS_HEX_COLORS = {
+  OPEN: '#38a169',
+  AI_RESPONDED: '#3182ce',
+  PENDING_HUMAN: '#d69e2e',
+  IN_PROGRESS: '#9f7aea',
+  RESOLVED: '#718096',
 };
 
 export const PRIORITY_COLORS = {

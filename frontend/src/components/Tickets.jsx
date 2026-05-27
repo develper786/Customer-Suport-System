@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { formatDate } from '../utils/dateUtils';
-import { STATUS_COLORS, PRIORITY_COLORS } from '../constants/appConstants';
+import { STATUS_HEX_COLORS, PRIORITY_COLORS } from '../constants/appConstants';
 import ticketService from '../services/tickets';
 import TicketModal from './TicketModal';
 import TicketDetail from './TicketDetail';
@@ -177,7 +177,7 @@ export default function Tickets() {
                   <td>
                     <span
                       className="badge status-badge"
-                      style={{ backgroundColor: STATUS_COLORS[ticket.status]?.hex || '#cbd5e0' }}
+                      style={{ backgroundColor: STATUS_HEX_COLORS[ticket.status] || '#cbd5e0' }}
                     >
                       {ticket.status.replace(/_/g, ' ')}
                     </span>
