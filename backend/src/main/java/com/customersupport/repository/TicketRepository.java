@@ -18,27 +18,26 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     long countByPriority(String priority);
     long countByCategory(String category);
 
-    // Volume metrics (last 7 days daily breakdown)
-    @Query("SELECT DATE(t.createdAt) as date, COUNT(t) as count FROM Ticket t " +
-           "WHERE t.createdAt >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) " +
-           "GROUP BY DATE(t.createdAt) ORDER BY DATE(t.createdAt)")
+    // Volume metrics (last 7 days daily breakdown) - using CAST to date
+    @Query(value = "SELECT CAST(t.created_at AS DATE) as date, COUNT(t.id) as count FROM tickets t " +
+           "WHERE t.created_at >= CURRENT_DATE - INTERVAL '7 days' " +
+           "GROUP BY CAST(t.created_at AS DATE) ORDER BY CAST(t.created_at AS DATE)", nativeQuery = true)
     List<Object[]> getLastSevenDaysVolume();
 
     // Volume metrics (last 4 weeks weekly breakdown)
-    @Query("SELECT WEEK(t.createdAt) as week, COUNT(t) as count FROM Ticket t " +
-           "WHERE t.createdAt >= DATE_SUB(CURDATE(), INTERVAL 28 DAY) " +
-           "GROUP BY WEEK(t.createdAt) ORDER BY WEEK(t.createdAt)")
+    @Query(value = "SELECT EXTRACT(WEEK FROM t.created_at) as week, COUNT(t.id) as count FROM tickets t " +
+           "WHERE t.created_at >= CURRENT_DATE - INTERVAL '28 days' " +
+           "GROUP BY EXTRACT(WEEK FROM t.created_at) ORDER BY EXTRACT(WEEK FROM t.created_at)", nativeQuery = true)
     List<Object[]> getLastFourWeeksVolume();
 
     // Response time: avg hours from creation to first agent response (resolved tickets only)
-    @Query("SELECT AVG(TIMESTAMPDIFF(HOUR, t.createdAt, " +
-           "(SELECT MIN(m.sentAt) FROM Message m WHERE m.ticket.id = t.id AND m.senderType = 'AGENT'))) " +
-           "FROM Ticket t WHERE t.status = 'RESOLVED'")
+    @Query(value = "SELECT AVG(EXTRACT(EPOCH FROM (SELECT MIN(m.sent_at) FROM messages m WHERE m.ticket_id = t.id AND m.sender_type = 'AGENT') - t.created_at) / 3600.0) " +
+           "FROM tickets t WHERE t.status = 'RESOLVED'", nativeQuery = true)
     Double getAverageFirstResponseTime();
 
     // Resolution time: avg hours from creation to resolvedAt timestamp
-    @Query("SELECT AVG(TIMESTAMPDIFF(HOUR, t.createdAt, t.resolvedAt)) " +
-           "FROM Ticket t WHERE t.resolvedAt IS NOT NULL")
+    @Query(value = "SELECT AVG(EXTRACT(EPOCH FROM (t.resolved_at - t.created_at)) / 3600.0) " +
+           "FROM tickets t WHERE t.resolved_at IS NOT NULL", nativeQuery = true)
     Double getAverageResolutionTime();
 
     // Legacy hardcoded queries (keep for backward compatibility)

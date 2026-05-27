@@ -11,6 +11,6 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     List<Message> findByTicketIdOrderBySentAtAsc(Long ticketId);
     List<Message> findByTicketId(Long ticketId);
 
-    @Query("SELECT m.senderType, COUNT(DISTINCT m.ticket.id) FROM Message m GROUP BY m.senderType")
+    @Query(value = "SELECT CAST(m.sender_type AS VARCHAR), COUNT(DISTINCT m.ticket_id) FROM messages m GROUP BY m.sender_type", nativeQuery = true)
     List<Object[]> countTicketsBySourceType();
 }

@@ -148,15 +148,19 @@ export default function Home() {
       <div className="chart-section">
         <h3>Tickets by Category</h3>
         <div className="chart-container">
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={350}>
             <PieChart>
               <Pie
                 data={categoryChartData}
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={(entry) => `${entry.name}: ${entry.value}`}
-                outerRadius={100}
+                label={(entry) => {
+                  const total = categoryChartData.reduce((sum, cat) => sum + cat.value, 0);
+                  const percentage = total > 0 ? ((entry.value / total) * 100).toFixed(1) : 0;
+                  return `${percentage}%`;
+                }}
+                outerRadius={90}
                 fill="#8884d8"
                 dataKey="value"
               >
@@ -164,10 +168,24 @@ export default function Home() {
                   <Cell key={`cell-${index}`} fill={categoryChartColors[index]} />
                 ))}
               </Pie>
-              <Tooltip />
-              <Legend />
+              <Tooltip formatter={(value) => `${value} tickets`} />
+              <Legend verticalAlign="bottom" height={36} />
             </PieChart>
           </ResponsiveContainer>
+        </div>
+        <div style={{ marginTop: '16px', padding: '12px', backgroundColor: '#f7fafc', borderRadius: '6px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '12px', fontSize: '13px' }}>
+            {categoryChartData.map((item, idx) => {
+              const total = categoryChartData.reduce((sum, cat) => sum + cat.value, 0);
+              const percentage = total > 0 ? ((item.value / total) * 100).toFixed(1) : 0;
+              return (
+                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ width: '12px', height: '12px', borderRadius: '2px', backgroundColor: categoryChartColors[idx] }} />
+                  <span>{item.name}: <strong>{item.value}</strong> ({percentage}%)</span>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 

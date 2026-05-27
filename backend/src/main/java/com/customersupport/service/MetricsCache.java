@@ -69,7 +69,13 @@ public class MetricsCache {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd");
 
         for (Object[] row : rawData) {
-            LocalDate date = (LocalDate) row[0];
+            LocalDate date;
+            Object dateObj = row[0];
+            if (dateObj instanceof java.sql.Date sqlDate) {
+                date = sqlDate.toLocalDate();
+            } else {
+                date = (LocalDate) dateObj;
+            }
             long count = ((Number) row[1]).longValue();
             data.add(new VolumePoint(date.format(formatter), count));
         }
